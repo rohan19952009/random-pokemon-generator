@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-outfit);
+  
+  --color-poke-red: #ff1f1f;
+  --color-poke-blue: #3b4cca;
+  --color-poke-yellow: #ffde00;
+  --color-poke-gold: #b3a125;
+  
+  /* Stat Colors */
+  --color-hp: #ff0000;
+  --color-atk: #f08030;
+  --color-def: #f8d030;
+  --color-spa: #6890f0;
+  --color-spd: #78c850;
+  --color-spe: #f85888;
+
+  /* Type Colors */
+  --color-type-normal: #A8A77A;
+  --color-type-fire: #EE8130;
+  --color-type-water: #6390F0;
+  --color-type-electric: #F7D02C;
+  --color-type-grass: #7AC74C;
+  --color-type-ice: #96D9D6;
+  --color-type-fighting: #C22E28;
+  --color-type-poison: #A33EA1;
+  --color-type-ground: #E2BF65;
+  --color-type-flying: #A98FF3;
+  --color-type-psychic: #F95587;
+  --color-type-bug: #A6B91A;
+  --color-type-rock: #B6A136;
+  --color-type-ghost: #735797;
+  --color-type-dragon: #6F35FC;
+  --color-type-dark: #705746;
+  --color-type-steel: #B7B7CE;
+  --color-type-fairy: #D685AD;
+}
+
+:root {
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --card: #ffffff;
+  --card-foreground: #1e293b;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-tap-highlight-color: transparent; /* Mobile optimization */
+}
+
+/* Ensure form elements are visible and professional on mobile */
+select, option {
+  color: inherit;
+  background-color: transparent;
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white border border-slate-200 shadow-xl md:bg-white/80 md:backdrop-blur-md md:border-white/20;
+  }
+  
+  .poke-button {
+    @apply relative overflow-hidden px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl font-bold transition-all duration-200 active:scale-95;
+  }
+  
+  .poke-button-primary {
+    @apply bg-poke-red text-white hover:bg-red-600 shadow-md;
+  }
+}
+
+/* Explicit Type Utilities for Reliable Dynamic Rendering */
+.bg-type-normal { background-color: #A8A77A !important; }
+.bg-type-fire { background-color: #EE8130 !important; }
+.bg-type-water { background-color: #6390F0 !important; }
+.bg-type-electric { background-color: #F7D02C !important; }
+.bg-type-grass { background-color: #7AC74C !important; }
+.bg-type-ice { background-color: #96D9D6 !important; }
+.bg-type-fighting { background-color: #C22E28 !important; }
+.bg-type-poison { background-color: #A33EA1 !important; }
+.bg-type-ground { background-color: #E2BF65 !important; }
+.bg-type-flying { background-color: #A98FF3 !important; }
+.bg-type-psychic { background-color: #F95587 !important; }
+.bg-type-bug { background-color: #A6B91A !important; }
+.bg-type-rock { background-color: #B6A136 !important; }
+.bg-type-ghost { background-color: #735797 !important; }
+.bg-type-dragon { background-color: #6F35FC !important; }
+.bg-type-dark { background-color: #705746 !important; }
+.bg-type-steel { background-color: #B7B7CE !important; }
+.bg-type-fairy { background-color: #D685AD !important; }
+
+/* Stat Bar Utilities */
+.bg-hp { background-color: #ff0000 !important; }
+.bg-atk { background-color: #f08030 !important; }
+.bg-def { background-color: #f8d030 !important; }
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
