@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { getRandomPokemon, type Pokemon, type PokemonCount } from "@/lib/pokeapi";
 import { INITIAL_POKEMON } from "@/lib/initial-data";
 import { PokemonCard } from "@/components/PokemonCard";
@@ -124,16 +124,9 @@ export default function Home() {
   return (
     <div className="w-full">
 
-      {/* Ultra-Slim Mobile-Friendly Hero - Clean & Fast */}
+      {/* Hero - Pure CSS fade-in, zero JS overhead */}
       <section className="relative py-4 md:py-6 overflow-hidden bg-[#F8FAFC]">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-yellow-400/5 to-transparent" />
-        
-        <div className="container mx-auto px-6 relative z-10 text-center md:text-left">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+        <div className="container mx-auto px-6 relative z-10 text-center md:text-left hero-fade-in">
             <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight leading-tight mb-4">
               The Ultimate <span className="text-poke-red italic">Random Pokémon</span> Generator
             </h1>
@@ -143,7 +136,6 @@ export default function Home() {
               to 
               <span className="text-slate-800 font-bold"> Paldea (Gen 9)</span>.
             </p>
-          </motion.div>
         </div>
       </section>
 
@@ -156,13 +148,9 @@ export default function Home() {
           loading={loading}
         />
 
-        {/* Premium Empty State */}
+        {/* Empty state */}
         {!loading && pokemon.length === 0 && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center py-20 px-6 bg-slate-50/50 rounded-[2.5rem] border-2 border-dashed border-slate-200"
-          >
+          <div className="flex flex-col items-center justify-center py-20 px-6 bg-slate-50/50 rounded-[2.5rem] border-2 border-dashed border-slate-200 hero-fade-in">
             <div className="w-20 h-20 bg-white rounded-full shadow-xl flex items-center justify-center mb-6 text-slate-300">
               <Search className="w-10 h-10" />
             </div>
@@ -170,11 +158,10 @@ export default function Home() {
             <p className="text-slate-500 text-center max-w-md">
               We couldn't find any Pokémon matching those specific filters. Try a different region or type combination!
             </p>
-          </motion.div>
+          </div>
         )}
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
-          <AnimatePresence mode="popLayout" initial={false}>
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
             {loading ? (
               Array.from({ length: 8 }).map((_, i) => (
                 <SkeletonCard key={`skeleton-${i}`} />
@@ -182,14 +169,13 @@ export default function Home() {
             ) : (
               pokemon.slice(0, visibleCount).map((p, i) => (
                 <PokemonCard 
-                  key={`${p.id}-${i}`} 
+                  key={p.id} 
                   pokemon={p} 
                   index={i} 
                   onShowDetails={handleShowDetails}
                 />
               ))
             )}
-          </AnimatePresence>
         </div>
 
         {/* Spacing and Generation Trigger Area */}

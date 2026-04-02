@@ -97,11 +97,17 @@ select, option {
 .bg-atk { background-color: #f08030 !important; }
 .bg-def { background-color: #f8d030 !important; }
 
-.animate-float {
-  animation: float 4s ease-in-out infinite;
+/* Hero fade-in: pure CSS, zero JS overhead */
+.hero-fade-in {
+  animation: heroFadeIn 0.4s ease-out both;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Stat bar: CSS transition, no JS animation */
+.stat-bar-fill {
+  transition: width 0.5s ease-out;
 }

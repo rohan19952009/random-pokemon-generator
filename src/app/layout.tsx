@@ -143,15 +143,24 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Critical CDN preconnects */}
+        <link rel="preconnect" href="https://raw.githubusercontent.com" />
+        <link rel="dns-prefetch" href="https://raw.githubusercontent.com" />
         <link rel="preconnect" href="https://assets.pokemon.com" />
         <link rel="dns-prefetch" href="https://assets.pokemon.com" />
-        <link rel="preload" as="image" href="https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png" fetchPriority="high" />
-        <link rel="preload" as="image" href="https://assets.pokemon.com/assets/cms2/img/pokedex/full/002.png" fetchPriority="high" />
         <link rel="dns-prefetch" href="https://pokeapi.co" />
+        {/* Preload first 4 Pokémon sprites for instant first paint */}
+        <link rel="preload" as="image" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" fetchPriority="high" />
+        <link rel="preload" as="image" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png" fetchPriority="high" />
+        <link rel="preload" as="image" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png" fetchPriority="high" />
+        <link rel="preload" as="image" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" fetchPriority="high" />
+        {/* Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        {/* AdSense — async so it never blocks render */}
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="sitemap" type="application/xml" href="https://randompokemongenerator.info/sitemap_index.xml" />
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6965739133010633" crossOrigin="anonymous"></script>
         <script
