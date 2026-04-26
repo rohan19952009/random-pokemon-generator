@@ -1,7 +1,7 @@
 "use client";
 
 import { POKEMON_TYPES, REGIONS, type PokemonCount } from "@/lib/pokeapi";
-import { ChevronDown, RefreshCw } from "lucide-react";
+import { ChevronDown, RefreshCw, Layers, Map, Trash2, Cpu } from "lucide-react";
 
 interface FilterPanelProps {
   onGenerate: () => void;
@@ -24,65 +24,80 @@ interface FilterPanelProps {
 
 export function FilterPanel({ onGenerate, filters, setFilters, loading }: FilterPanelProps) {
   return (
-    <div className="glass-card p-4 md:p-6 rounded-2xl mb-6 md:mb-8">
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6 items-end">
+    <div className="glass-card p-6 md:p-8 relative overflow-hidden">
+      {/* Technical Header Decorative */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-lab-accent/40 to-transparent" />
+      
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 items-end relative z-10">
         <div className="col-span-1">
-          <label className="block text-[10px] md:text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Region</label>
+          <label className="flex items-center gap-2 text-[10px] font-black text-lab-accent mb-3 uppercase tracking-[0.2em]">
+            <Map className="w-3 h-3" />
+            Region Buffer
+          </label>
           <div className="relative group">
             <select
               value={filters.region}
               onChange={(e) => setFilters({ ...filters, region: e.target.value })}
-              className="w-full h-11 md:h-12 px-3 md:px-4 bg-white border border-slate-200 rounded-lg md:rounded-xl appearance-none cursor-pointer focus:ring-2 focus:ring-poke-red outline-none capitalize text-sm md:text-base shadow-sm text-slate-900 transition-all"
+              aria-label="Select Pokémon search region"
+              className="w-full h-12 px-4 bg-white/5 border border-lab-border rounded-xl appearance-none cursor-pointer focus:border-lab-accent focus:ring-1 focus:ring-lab-accent outline-none capitalize text-sm font-bold text-lab-text transition-all"
             >
               {REGIONS.map((region) => (
-                <option key={region} value={region} className="bg-white text-slate-900">
+                <option key={region} value={region} className="bg-lab-bg text-lab-text">
                   {region}
                 </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-hover:text-poke-red transition-colors" />
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-lab-text-muted pointer-events-none group-hover:text-lab-accent transition-colors" />
           </div>
         </div>
         
         <div className="col-span-1">
-          <label className="block text-[10px] md:text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Type</label>
+          <label className="flex items-center gap-2 text-[10px] font-black text-lab-accent mb-3 uppercase tracking-[0.2em]">
+            <Layers className="w-3 h-3" />
+            Type Filter
+          </label>
           <div className="relative group">
             <select
               value={filters.type}
               onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-              className="w-full h-11 md:h-12 px-3 md:px-4 bg-white border border-slate-200 rounded-lg md:rounded-xl appearance-none cursor-pointer focus:ring-2 focus:ring-poke-red outline-none capitalize text-sm md:text-base shadow-sm text-slate-900 transition-all"
+              aria-label="Filter signatures by Pokémon type"
+              className="w-full h-12 px-4 bg-white/5 border border-lab-border rounded-xl appearance-none cursor-pointer focus:border-lab-accent focus:ring-1 focus:ring-lab-accent outline-none capitalize text-sm font-bold text-lab-text transition-all"
             >
-              <option value="all" className="bg-white text-slate-900">All Types</option>
+              <option value="all" className="bg-lab-bg text-lab-text">All Types</option>
               {POKEMON_TYPES.map((type) => (
-                <option key={type} value={type} className="bg-white text-slate-900">
+                <option key={type} value={type} className="bg-lab-bg text-lab-text">
                   {type}
                 </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-hover:text-poke-red transition-colors" />
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-lab-text-muted pointer-events-none group-hover:text-lab-accent transition-colors" />
           </div>
         </div>
         
         <div className="col-span-1">
-          <label className="block text-[10px] md:text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Amount</label>
+          <label className="flex items-center gap-2 text-[10px] font-black text-lab-accent mb-3 uppercase tracking-[0.2em]">
+            <Cpu className="w-3 h-3" />
+            Signal Count
+          </label>
           <div className="relative group">
             <select
               value={filters.count}
               onChange={(e) => setFilters({ ...filters, count: e.target.value === "all" ? "all" : parseInt(e.target.value) })}
-              className="w-full h-11 md:h-12 px-3 md:px-4 bg-white border border-slate-200 rounded-lg md:rounded-xl appearance-none cursor-pointer focus:ring-2 focus:ring-poke-red outline-none text-sm md:text-base shadow-sm text-slate-900 transition-all font-bold"
+              aria-label="Select extraction unit count"
+              className="w-full h-12 px-4 bg-white/5 border border-lab-border rounded-xl appearance-none cursor-pointer focus:border-lab-accent focus:ring-1 focus:ring-lab-accent outline-none text-sm font-black text-lab-text transition-all"
             >
               {[1, 3, 6, 9, 12, 18, 24, 36, 48, 60, 100].map((num) => (
-                <option key={num} value={num} className="bg-white text-slate-900">
-                  {num} Pokémon
+                <option key={num} value={num} className="bg-lab-bg text-lab-text">
+                  {num} Units
                 </option>
               ))}
-              <option value="all" className="bg-white text-slate-900 font-bold">Show All</option>
+              <option value="all" className="bg-lab-bg text-lab-text font-black">Full Array</option>
             </select>
-            <ChevronDown className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-hover:text-poke-red transition-colors" />
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-lab-text-muted pointer-events-none group-hover:text-lab-accent transition-colors" />
           </div>
         </div>
 
-        <div className="col-span-1 flex gap-2">
+        <div className="col-span-1 flex gap-3">
           <Toggle
             label="Legend"
             checked={filters.isLegendary}
@@ -99,10 +114,11 @@ export function FilterPanel({ onGenerate, filters, setFilters, loading }: Filter
           <button
             onClick={onGenerate}
             disabled={loading}
-            className="poke-button poke-button-primary h-11 md:h-12 w-full flex items-center justify-center gap-2 group disabled:opacity-50 text-sm font-black tracking-widest uppercase"
+            aria-label="Initialize high-fidelity Pokémon signature extraction"
+            className="lab-button lab-button-primary h-12 w-full text-xs uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(0,242,255,0.2)]"
           >
-            <RefreshCw className={`w-4 h-4 md:w-5 md:h-5 ${loading ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-500"}`} />
-            {loading ? "..." : "Generate"}
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-700"}`} />
+            {loading ? "SCANNING..." : "INITIALIZE"}
           </button>
         </div>
       </div>
@@ -112,18 +128,22 @@ export function FilterPanel({ onGenerate, filters, setFilters, loading }: Filter
 
 function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
-      <button
+    <button
       onClick={() => onChange(!checked)}
-      className={`flex-1 h-11 md:h-12 rounded-lg md:rounded-xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 ${
+      className={`flex-1 h-12 rounded-xl border transition-all flex flex-col items-center justify-center gap-1 group relative overflow-hidden ${
         checked 
-        ? "bg-poke-yellow/10 border-poke-gold text-poke-gold" 
-        : "bg-slate-50 border-transparent text-slate-400 hover:border-slate-200"
+        ? "bg-lab-accent/10 border-lab-accent text-lab-accent shadow-[inset_0_0_10px_rgba(0,242,255,0.1)]" 
+        : "bg-white/5 border-lab-border text-lab-text-muted hover:border-lab-accent/40"
       }`}
     >
-      <span className="text-[9px] font-black uppercase tracking-tighter leading-none">{label}</span>
-      <span className={`text-[10px] font-bold leading-none ${checked ? "opacity-100" : "opacity-30"}`}>
-        {checked ? "ON" : "OFF"}
+      <span className="text-[9px] font-black uppercase tracking-widest leading-none z-10">{label}</span>
+      <span className={`text-[8px] font-black leading-none z-10 ${checked ? "text-lab-accent" : "text-white/20"}`}>
+        {checked ? "[ ACTIVE ]" : "[ OFFLINE ]"}
       </span>
+      {checked && (
+        <div className="absolute inset-0 bg-lab-accent/5 animate-pulse" />
+      )}
     </button>
   );
 }
+

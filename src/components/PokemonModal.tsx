@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { type Pokemon, getFullPokemonDetails } from "@/lib/pokeapi";
-import { X, Sword, Shield, Zap, Heart, Activity, Info, Loader2 } from "lucide-react";
+import { X, Sword, Shield, Zap, Heart, Activity, Info, Loader2, Database, Laptop, Terminal, Target, Plus, Check } from "lucide-react";
 import Image from "next/image";
+import { useLab } from "@/context/LabContext";
 
 interface PokemonModalProps {
   pokemon: Pokemon | null;
@@ -10,8 +11,11 @@ interface PokemonModalProps {
 }
 
 export function PokemonModal({ pokemon: litePokemon, onClose }: PokemonModalProps) {
+  const { addToTeam, isPokemonInTeam } = useLab();
   const [pokemon, setPokemon] = useState<Pokemon | null>(litePokemon);
   const [loading, setLoading] = useState(false);
+
+  const inTeam = pokemon ? isPokemonInTeam(pokemon.id) : false;
 
   useEffect(() => {
     if (!litePokemon) {
@@ -19,22 +23,20 @@ export function PokemonModal({ pokemon: litePokemon, onClose }: PokemonModalProp
       return;
     }
 
-    // Check if it's already full data (from API or pre-hydrated)
-    // Lite data from the bundle has flavorText as an empty string
     if (litePokemon.flavorText !== "") {
       setPokemon(litePokemon);
       return;
     }
 
-    // Otherwise, fetch the full details lazily
     const loadDetails = async () => {
       setLoading(true);
       try {
         const fullData = await getFullPokemonDetails(litePokemon.id);
+        await new Promise(resolve => setTimeout(resolve, 600));
         setPokemon(fullData);
       } catch (e) {
         console.error("Failed to load details:", e);
-        setPokemon(litePokemon); // Fallback to lite
+        setPokemon(litePokemon);
       } finally {
         setLoading(false);
       }
@@ -46,47 +48,64 @@ export function PokemonModal({ pokemon: litePokemon, onClose }: PokemonModalProp
   if (!pokemon) return null;
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-6 bg-slate-900/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-8 bg-lab-bg/80 backdrop-blur-xl">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        initial={{ opacity: 0, scale: 0.9, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        className="bg-white w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-[2.5rem] shadow-2xl flex flex-col md:flex-row relative"
+        exit={{ opacity: 0, scale: 0.9, y: 30 }}
+        className="glass-card w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row relative border-lab-accent/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
       >
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 md:top-6 md:right-6 z-50 p-2.5 bg-white md:bg-slate-100 rounded-full shadow-lg md:shadow-none hover:bg-poke-red hover:text-white transition-all active:scale-95"
-        >
-          <X className="w-6 h-6" />
-        </button>
-
-        {/* Left Side: Visuals */}
-        <div className={`w-full md:w-2/5 p-2 md:p-8 flex flex-col items-center justify-center relative overflow-hidden bg-type-${pokemon.types[0]}/10`}>
-          <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-            <svg viewBox="0 0 100 100" className="w-full h-full fill-current">
-              <circle cx="50" cy="50" r="40" />
-            </svg>
-          </div>
+        {/* Header Controls */}
+        <div className="absolute top-6 right-6 z-50 flex items-center gap-3">
+          <button
+            onClick={() => {
+              if (!inTeam && pokemon) addToTeam(pokemon);
+            }}
+            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-xl ${
+              inTeam 
+              ? "bg-lab-accent text-lab-bg shadow-lab-accent/20" 
+              : "bg-white/5 border border-white/10 text-lab-text hover:border-lab-accent hover:text-lab-accent"
+            }`}
+          >
+            {inTeam ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+            {inTeam ? "Captured" : "Add to Lab"}
+          </button>
           
-          <div className="relative w-full h-[320px] md:h-80 z-10 transition-transform duration-700 hover:rotate-6">
+          <button
+            onClick={onClose}
+            className="p-3 rounded-full bg-white/5 border border-white/10 text-white/40 hover:text-lab-accent hover:border-lab-accent transition-all active:scale-95 shadow-xl"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Left Side: Visuals & Scanning */}
+        <div className={`w-full md:w-2/5 p-8 flex flex-col items-center justify-center relative overflow-hidden bg-white/5 border-r border-lab-border`}>
+          {/* Decorative Grid */}
+          <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:30px_30px]" />
+          
+          <div className="relative w-full h-80 z-10 transition-transform duration-1000 ease-out group">
+            <div className="absolute inset-0 bg-gradient-to-t from-lab-accent/10 to-transparent blur-3xl rounded-full opacity-50" />
             <Image
               src={`https://assets.pokemon.com/assets/cms2/img/pokedex/full/${String(pokemon.id).padStart(3, "0")}.png`}
-              alt={pokemon.name}
+              alt={`${pokemon.name} - ${pokemon.types.join("/")} Type Detailed Signature Metadata`}
               fill
-              className="object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+              className="object-contain drop-shadow-[0_0_30px_rgba(0,242,255,0.4)] relative z-10"
               priority
             />
           </div>
           
-          <div className="mt-8 text-center">
-            <span className="text-sm font-black text-slate-400 tracking-widest uppercase">#{String(pokemon.id).padStart(3, "0")}</span>
-            <h2 className="text-4xl font-black capitalize mt-2 mb-4 bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-600">
+          <div className="mt-12 text-center relative z-10 w-full">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-lab-accent/10 border border-lab-accent/30 text-lab-accent text-[10px] font-black tracking-[0.3em] uppercase mb-4">
+              <Target className="w-3 h-3" />
+              Signature Verified
+            </div>
+            <h2 className="text-5xl font-black capitalize text-lab-text tracking-tighter mb-4 text-glow">
               {pokemon.name}
             </h2>
-            <div className="flex gap-2 justify-center">
+            <div className="flex gap-3 justify-center">
               {pokemon.types.map((type: string) => (
-                <span key={type} className={`px-4 py-1.5 rounded-full text-xs font-black uppercase text-white bg-type-${type} shadow-lg shadow-type-${type}/20`}>
+                <span key={type} className={`px-4 py-1 rounded-md text-[10px] font-black uppercase text-white bg-type-${type} shadow-lg ring-1 ring-white/20`}>
                   {type}
                 </span>
               ))}
@@ -94,60 +113,66 @@ export function PokemonModal({ pokemon: litePokemon, onClose }: PokemonModalProp
           </div>
         </div>
 
-        {/* Right Side: Data */}
-        <div className="w-full md:w-3/5 p-8 md:p-12 overflow-y-auto bg-slate-50/50 relative">
+        {/* Right Side: Data Mainframe */}
+        <div className="w-full md:w-3/5 p-8 md:p-14 overflow-y-auto relative bg-transparent scrollbar-thin scrollbar-thumb-lab-border">
           {loading && (
-            <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-50 flex flex-col items-center justify-center gap-4">
-              <div className="w-12 h-12 rounded-full border-4 border-slate-100 border-t-poke-red animate-spin" />
-              <p className="text-xs font-black uppercase tracking-widest text-slate-400">Catching Data...</p>
+            <div className="absolute inset-0 bg-lab-bg/80 backdrop-blur-md z-50 flex flex-col items-center justify-center gap-6">
+              <div className="relative">
+                <Loader2 className="w-16 h-16 text-lab-accent animate-spin" />
+                <div className="absolute inset-0 blur-xl bg-lab-accent/20 animate-pulse" />
+              </div>
+              <div className="flex flex-col items-center">
+                <p className="text-xs font-black uppercase tracking-[0.4em] text-lab-accent text-glow">Deep Data Scan</p>
+                <p className="text-[10px] text-lab-text-muted mt-2 font-mono">ACCESSING SIG_{pokemon.id}_CORE...</p>
+              </div>
             </div>
           )}
 
-          {/* Lore Section */}
-          <div className="mb-10">
-            <h3 className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-poke-red mb-4">
-              <Info className="w-4 h-4" />
-              Pokédex Entry
-            </h3>
-            <p className="text-lg text-slate-600 leading-relaxed italic border-l-4 border-poke-red/20 pl-6 h-18">
-              "{pokemon.flavorText || "Loading elite lore entry..."}"
+          {/* Entry Protocol */}
+          <div className="mb-12">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-[1px] bg-lab-accent" />
+              <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-lab-accent italic">Extraction Entry</h3>
+            </div>
+            <p className="text-xl text-lab-text-muted leading-relaxed font-medium italic border-l-2 border-lab-accent/20 pl-8 py-2">
+              "{pokemon.flavorText || "Synchronizing with the main encrypted archive... Data yield incoming."}"
             </p>
           </div>
 
-          {/* Stats Grid */}
-          <div className="mb-10">
-            <h3 className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-poke-blue mb-4">
-              <Activity className="w-4 h-4" />
-              Base Stats
-            </h3>
-            <div className="grid grid-cols-2 gap-6">
-              <StatItem icon={<Heart className="text-red-500" />} label="HP" value={pokemon.stats.hp} color="bg-red-500" />
-              <StatItem icon={<Sword className="text-orange-500" />} label="Attack" value={pokemon.stats.attack} color="bg-orange-500" />
-              <StatItem icon={<Shield className="text-blue-500" />} label="Defense" value={pokemon.stats.defense} color="bg-blue-500" />
-              <StatItem icon={<Zap className="text-yellow-500" />} label="Speed" value={pokemon.stats.speed} color="bg-yellow-500" />
+          {/* Stats Analysis */}
+          <div className="mb-12">
+             <div className="flex items-center gap-3 mb-8">
+              <div className="w-8 h-[1px] bg-lab-accent" />
+              <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-lab-accent italic">Telemetry Readouts</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+              <StatItem label="Vitality (HP)" value={pokemon.stats.hp} color="bg-hp" />
+              <StatItem label="Power (ATK)" value={pokemon.stats.attack} color="bg-atk" />
+              <StatItem label="Armor (DEF)" value={pokemon.stats.defense} color="bg-def" />
+              <StatItem label="Response (SPD)" value={pokemon.stats.speed} color="bg-spe" />
             </div>
           </div>
 
-          {/* Effectiveness Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+          {/* Type Effectiveness Mainframe */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12 border-t border-lab-border pt-12">
             <div>
-              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
-                <Sword className="w-3 h-3 text-red-500" />
-                Weaknesses
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-lab-text-muted mb-6 flex items-center gap-2">
+                <Terminal className="w-3.5 h-3.5 text-lab-accent" />
+                Compromised Under
               </h3>
-              <div className="flex flex-wrap gap-2 min-h-6">
+              <div className="flex flex-wrap gap-2.5">
                 {pokemon.relations.doubleDamageFrom.map((type: string) => (
                   <TypeBadge key={type} type={type} />
                 ))}
-                {!loading && pokemon.relations.doubleDamageFrom.length === 0 && <span className="text-sm text-slate-400">Stable entry.</span>}
+                {!loading && pokemon.relations.doubleDamageFrom.length === 0 && <span className="text-[9px] font-bold text-lab-text-muted italic lowercase">Zero vulnerabilities detected.</span>}
               </div>
             </div>
             <div>
-              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
-                <Shield className="w-3 h-3 text-blue-500" />
-                Resistances
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-lab-text-muted mb-6 flex items-center gap-2">
+                <Shield className="w-3.5 h-3.5 text-lab-accent" />
+                Resistant Protocols
               </h3>
-              <div className="flex flex-wrap gap-2 min-h-6">
+              <div className="flex flex-wrap gap-2.5">
                 {pokemon.relations.halfDamageFrom.map((type: string) => (
                   <TypeBadge key={type} type={type} />
                 ))}
@@ -158,22 +183,24 @@ export function PokemonModal({ pokemon: litePokemon, onClose }: PokemonModalProp
             </div>
           </div>
 
-          {/* Battle Strategy */}
-          <div className="p-6 rounded-2xl bg-slate-100 border border-slate-200">
-            <h3 className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-poke-yellow mb-4">
-              <Zap className="w-4 h-4" />
-              Battle Strategy
-            </h3>
-            <div className="space-y-4">
+          {/* Strategic Terminal */}
+          <div className="p-8 rounded-2xl bg-white/5 border border-lab-accent/20 relative overflow-hidden">
+            <div className="flex items-center gap-3 mb-6 relative z-10">
+              <Laptop className="w-4 h-4 text-lab-accent" />
+              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-lab-text">Mission Strategy</h3>
+            </div>
+            <div className="space-y-4 relative z-10">
               <div className="flex gap-4">
-                <div className="w-1.5 h-auto bg-poke-red rounded-full flex-shrink-0" />
+                <div className="w-1 h-auto bg-lab-accent/30 rounded-full flex-shrink-0" />
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-1">Combat Analysis</h4>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    {loading ? "Analyzing genetic markers..." : `As a ${pokemon.types.join("/")} type, this Pokémon is ideally suited for ${pokemon.stats.attack > pokemon.stats.specialAttack ? "physical" : "elemental"} tactical engagements.`}
+                   <p className="text-[11px] text-lab-text-muted leading-relaxed font-mono">
+                    {loading ? "> RUNNING ANALYSIS..." : `> Subject ${pokemon.name} classified as ${pokemon.types.join("/")} hybrid. Recommended tactical role: ${pokemon.stats.attack > pokemon.stats.specialAttack ? "PHYSICAL STRIKER" : "ELEMENTAL SPECIALIST"}. Monitor Speed tiers closely for turn priority advantage.`}
                   </p>
                 </div>
               </div>
+            </div>
+            <div className="absolute bottom-0 right-0 p-2 opacity-5">
+              <Database className="w-24 h-24" />
             </div>
           </div>
         </div>
@@ -182,23 +209,25 @@ export function PokemonModal({ pokemon: litePokemon, onClose }: PokemonModalProp
   );
 }
 
-function StatItem({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: number; color: string }) {
+function StatItem({ label, value, color }: { label: string; value: number; color: string }) {
   const percentage = Math.min(100, (value / 255) * 100);
   return (
-    <div>
-      <div className="flex justify-between items-center mb-1 text-sm font-bold">
-        <div className="flex items-center gap-2 uppercase tracking-tighter text-[10px] text-slate-500">
-          {icon}
+    <div className="group">
+      <div className="flex justify-between items-center mb-3 text-sm font-bold">
+        <div className="flex items-center gap-2 uppercase tracking-widest text-[9px] text-lab-text-muted group-hover:text-lab-text transition-colors">
           {label}
         </div>
-        <span>{value}</span>
+        <span className="text-lab-text font-black text-xs font-mono">{value}</span>
       </div>
-      <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+      <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
-          className={`h-full ${color} shadow-[0_0_10px_rgba(0,0,0,0.1)]`}
-        />
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className={`h-full ${color} shadow-[0_0_15px_rgba(255,255,255,0.1)] relative`}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/20" />
+        </motion.div>
       </div>
     </div>
   );
@@ -206,7 +235,7 @@ function StatItem({ icon, label, value, color }: { icon: React.ReactNode; label:
 
 function TypeBadge({ type, pulse }: { type: string; pulse?: boolean }) {
   return (
-    <span className={`px-2.5 py-1 rounded-md text-[9px] font-bold uppercase text-white bg-type-${type} ${pulse ? "animate-pulse" : ""} ring-1 ring-white/20`}>
+    <span className={`px-2.5 py-1 rounded text-[9px] font-black uppercase text-white bg-type-${type} ${pulse ? "animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.2)]" : ""} border border-white/10`}>
       {type}
     </span>
   );

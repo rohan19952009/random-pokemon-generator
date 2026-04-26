@@ -3,20 +3,24 @@
 @theme inline {
   --font-sans: var(--font-outfit);
   
-  --color-poke-red: #ff1f1f;
-  --color-poke-blue: #3b4cca;
-  --color-poke-yellow: #ffde00;
-  --color-poke-gold: #b3a125;
+  /* Pokedex Lab Primary Colors */
+  --color-lab-bg: #0a0c10;
+  --color-lab-card: rgba(255, 255, 255, 0.03);
+  --color-lab-border: rgba(255, 255, 255, 0.08);
+  --color-lab-accent: #00f2ff; /* Electric Cyan */
+  --color-lab-accent-glow: rgba(0, 242, 255, 0.3);
+  --color-lab-text: #e2e8f0;
+  --color-lab-text-muted: #94a3b8;
   
-  /* Stat Colors */
-  --color-hp: #ff0000;
-  --color-atk: #f08030;
-  --color-def: #f8d030;
-  --color-spa: #6890f0;
-  --color-spd: #78c850;
-  --color-spe: #f85888;
+  /* Pokemon Stat Colors (Lab Variation) */
+  --color-hp: #ff3e3e;
+  --color-atk: #ff9a3e;
+  --color-def: #ffd83e;
+  --color-spa: #3e9aff;
+  --color-spd: #3eff9a;
+  --color-spe: #ff3ea5;
 
-  /* Type Colors */
+  /* Type Colors (Neon Lab Variation) */
   --color-type-normal: #A8A77A;
   --color-type-fire: #EE8130;
   --color-type-water: #6390F0;
@@ -38,37 +42,60 @@
 }
 
 :root {
-  --background: #f8fafc;
-  --foreground: #1e293b;
-  --card: #ffffff;
-  --card-foreground: #1e293b;
+  --background: var(--color-lab-bg);
+  --foreground: var(--color-lab-text);
+  --card: var(--color-lab-card);
+  --accent: var(--color-lab-accent);
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  -webkit-tap-highlight-color: transparent; /* Mobile optimization */
-}
-
-/* Ensure form elements are visible and professional on mobile */
-select, option {
-  color: inherit;
-  background-color: transparent;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(0, 242, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 0% 100%, rgba(0, 242, 255, 0.02) 0%, transparent 50%);
+  background-attachment: fixed;
+  min-height: 100vh;
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white border border-slate-200 shadow-xl md:bg-white/80 md:backdrop-blur-md md:border-white/20;
+    @apply bg-lab-card border border-lab-border backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-2xl transition-all duration-300;
   }
   
-  .poke-button {
-    @apply relative overflow-hidden px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl font-bold transition-all duration-200 active:scale-95;
+  .glass-card-hover {
+    @apply hover:border-lab-accent hover:shadow-[0_0_20px_rgba(0,242,255,0.15)] cursor-pointer;
   }
   
-  .poke-button-primary {
-    @apply bg-poke-red text-white hover:bg-red-600 shadow-md;
+  .lab-button {
+    @apply relative overflow-hidden px-6 py-3 rounded-xl font-bold transition-all duration-300 active:scale-95 flex items-center justify-center gap-2;
+  }
+  
+  .lab-button-primary {
+    @apply bg-lab-accent text-lab-bg hover:shadow-[0_0_25px_rgba(0,242,255,0.4)] hover:scale-[1.02];
+  }
+
+  .lab-button-outline {
+    @apply border border-lab-accent/30 text-lab-accent hover:bg-lab-accent/10;
+  }
+
+  /* Technical Scanning Animation */
+  .scanning-line {
+    @apply absolute left-0 w-full h-[2px] bg-lab-accent shadow-[0_0_10px_#00f2ff];
+    animation: scan 2s linear infinite;
+  }
+
+  @keyframes scan {
+    0% { top: 0%; opacity: 0; }
+    5% { opacity: 1; }
+    95% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* Text Glow */
+  .text-glow {
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
   }
 }
 
@@ -93,21 +120,24 @@ select, option {
 .bg-type-fairy { background-color: #D685AD !important; }
 
 /* Stat Bar Utilities */
-.bg-hp { background-color: #ff0000 !important; }
-.bg-atk { background-color: #f08030 !important; }
-.bg-def { background-color: #f8d030 !important; }
+.bg-hp { background-color: #ff3e3e !important; }
+.bg-atk { background-color: #ff9a3e !important; }
+.bg-def { background-color: #ffd83e !important; }
+.bg-spa { background-color: #3e9aff !important; }
+.bg-spd { background-color: #3eff9a !important; }
+.bg-spe { background-color: #ff3ea5 !important; }
 
-/* Hero fade-in: pure CSS, zero JS overhead */
+/* Hero fade-in */
 .hero-fade-in {
-  animation: heroFadeIn 0.4s ease-out both;
+  animation: heroFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes heroFadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Stat bar: CSS transition, no JS animation */
+/* Stat bar update */
 .stat-bar-fill {
-  transition: width 0.5s ease-out;
+  transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
