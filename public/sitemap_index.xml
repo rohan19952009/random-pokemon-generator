@@ -2,26 +2,74 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://randompokemongenerator.info/</loc>
-    <lastmod>2026-03-19</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-04-26</lastmod>
   </url>
   <url>
     <loc>https://randompokemongenerator.info/about</loc>
-    <lastmod>2026-03-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/tools</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/tools/team-planner</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/tools/compare</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/tools/iv-calculator</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/tools/catch-rate</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/tools/shiny-odds</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/tools/type-weakness</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/tools/fusion-generator</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/tools/nickname-generator</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/tools/favorite-picker</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/games</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/games/whos-that-pokemon</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/games/pokemon-wordle</loc>
+    <lastmod>2026-04-26</lastmod>
+  </url>
+  <url>
+    <loc>https://randompokemongenerator.info/games/smash-or-pass</loc>
+    <lastmod>2026-04-26</lastmod>
   </url>
   <url>
     <loc>https://randompokemongenerator.info/privacy-policy</loc>
-    <lastmod>2026-03-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <lastmod>2026-04-26</lastmod>
   </url>
   <url>
     <loc>https://randompokemongenerator.info/terms-of-service</loc>
-    <lastmod>2026-03-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <lastmod>2026-04-26</lastmod>
   </url>
 </urlset>
