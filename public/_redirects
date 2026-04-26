@@ -1,5 +1,2 @@
 # Precise Canonical Enforcement
 https://www.randompokemongenerator.info/* https://randompokemongenerator.info/:splat 301
-
-# Redirect all 404s to homepage
-/* / 302
